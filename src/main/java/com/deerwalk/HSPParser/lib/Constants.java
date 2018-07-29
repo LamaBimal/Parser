@@ -24,7 +24,7 @@ public class Constants {
     public static ArrayList<String> dependentInsuredRecordType = new ArrayList<>();
     public static ArrayList<String> metaDataFields = new ArrayList<>();
     public static Map<String,String> dependentBeginSegment = new HashMap<>();
-    /*public static ArrayList<String> dependentInsuredFields = new ArrayList<>();*/
+    public static ArrayList<String> dependentInsuredFields = new ArrayList<>();
 
     static {
         /**
@@ -33,16 +33,16 @@ public class Constants {
          */
         dependentInsuredRecordType.add("I1");
         dependentInsuredRecordType.add("I2");
-        dependentInsuredRecordType.add("C");
 
         /**
-         *  while generating
-         *
+         *  while generating the dependent records, the dependency of the Coverage Record elements.
          * **/
-        /*dependentInsuredFields.add("CR_Coverage_Effective_Date");
+        dependentInsuredFields.add("CR_Coverage_Effective_Date");
         dependentInsuredFields.add("CR_Coverage_Term_Date");
         dependentInsuredFields.add("CR_Coverage_Plan_Code");
-        dependentInsuredFields.add("CR_Coverage_Dep_Status_Code");*/
+        dependentInsuredFields.add("CR_Coverage_Dep_Status_Code");
+        dependentInsuredFields.add("CR_Insured_ID_SSN");
+        dependentInsuredFields.add("CR_Coverage_Type");
 
         /***
          *

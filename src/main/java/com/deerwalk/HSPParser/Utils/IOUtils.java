@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -57,6 +58,15 @@ public class IOUtils {
         return strings;
     }
 
+    public static String[] convertCollectionToArray(Collection collection){
+
+        String[] arrays = new String[collection.size()];
+        for(int i=0;i<collection.size();i++) {
+            arrays[i] = collection.toArray()[i].toString();
+        }
+        return arrays;
+    }
+
     /**
      * function which returns the current date.
      **/
@@ -64,5 +74,14 @@ public class IOUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         String currentDate = dateFormat.format(new Date()).toString();
         return currentDate;
+    }
+
+    public static CSVGenerator initializeCSVFile(String inputFile) {
+
+        String inputFileName = IOUtils.getFileName(inputFile);
+        String outputFileName = IOUtils.getOutputFileName(inputFile, inputFileName);
+        CSVGenerator csvGenerator = new CSVGenerator();
+        csvGenerator.setCSVWriter(outputFileName);
+        return csvGenerator;
     }
 }

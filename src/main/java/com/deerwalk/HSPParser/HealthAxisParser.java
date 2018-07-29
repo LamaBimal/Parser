@@ -1,7 +1,5 @@
 package com.deerwalk.HSPParser;
 
-import com.deerwalk.HSPParser.Utils.HSPLayoutReader;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -13,15 +11,10 @@ public class HealthAxisParser {
 
     public static void main(String[] args) {
 
-       String inputFile = "/home/btamang/Desktop/HealthAxisFile/ELIGFF.R.DWCPW_HSP_HAX_ELIG_SAMPLE_FILE_20180521";
-
-        RuleExtractor ruleExtractor = new RuleExtractor();
+       String inputFile = "/home/bimal/Desktop/HealthAxisFile/ELIGFF.R.DWCPW_HSP_HAX_ELIG_SAMPLE_FILE_20180726";
 
         ClassLoader classLoader = HealthAxisParser.class.getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream("HSP_Layout.xlsx");
-        InputStream ruleInputStream = classLoader.getResourceAsStream("hsp_elig_Insured_layout.txt");
-
-        ruleExtractor.extractLayout(ruleInputStream);
+        InputStream inputStream = classLoader.getResourceAsStream("HspLayout.xlsx");
 
         try {
             new HealthAxisParser().parse(inputFile,inputStream);
@@ -34,11 +27,14 @@ public class HealthAxisParser {
 
         InputStream ruleInputStream = HealthAxisParser.class.getClassLoader().getResourceAsStream("hsp_elig_Insured_layout.txt");
 
-        RuleExtractor ruleExtractor = new RuleExtractor();
+        RuleExtractor ruleExtractor = RuleExtractor.getInstance();
         ruleExtractor.extractLayout(ruleInputStream);
 
-        HSPLayoutReader reader = new HSPLayoutReader();
-        reader.readFile(inputFile,layoutStream,ruleExtractor);
+        LayoutExtractor layoutExtractor = new LayoutExtractor();
+        layoutExtractor.extractLayoutFields(layoutStream);
+
+        HSPReader hspReader = HSPReaderFactory.getReader(layoutExtractor.getLayoutVersion());
+        hspReader.parseInputFile(inputFile,layoutExtractor,ruleExtractor);
 
         ruleInputStream.close();
     }

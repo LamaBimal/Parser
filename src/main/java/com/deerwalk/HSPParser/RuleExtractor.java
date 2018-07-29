@@ -16,8 +16,16 @@ public class RuleExtractor {
 
     private Map<String, List<Element>> segments = new HashMap<String, List<Element>>();
 
+    public static RuleExtractor ruleExtractor = new RuleExtractor();
+
+    private RuleExtractor(){}
+
+    public static RuleExtractor getInstance(){
+        return ruleExtractor;
+    }
     public void extractLayout(InputStream inputStream) {
 
+        segments.clear();
         Scanner scanner = new Scanner(inputStream);
         while (scanner.hasNextLine()) {
             String row = scanner.nextLine();
@@ -83,5 +91,13 @@ public class RuleExtractor {
             return new ArrayList<>();
         }
 
+    }
+
+    public List<Element> getElements(String segment){
+        if (segments.containsKey(segment)) {
+            return this.segments.get(segment);
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

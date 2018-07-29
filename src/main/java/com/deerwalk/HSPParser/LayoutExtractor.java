@@ -81,4 +81,9 @@ public class LayoutExtractor {
         return layoutVersion;
     }
 
+
+    void extractLayoutFields(InputStream layoutStream) {
+        String[] arrays = new String[]{Constants.Layout_Insured, Constants.Layout_DEPENDENT};
+        extractLayoutField(layoutStream, arrays);
+    }
 }

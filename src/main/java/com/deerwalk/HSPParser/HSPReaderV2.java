@@ -50,10 +50,6 @@ public class HSPReaderV2 implements HSPReader {
         }
     }
 
-    public String getLayoutType() {
-        return this.layoutType;
-    }
-
     public void parseInputFile(String inputFile, LayoutExtractor layoutExtractor, RuleExtractor ruleExtractor) {
 
         FileReader fileReader = new FileReader(inputFile);
@@ -131,6 +127,7 @@ public class HSPReaderV2 implements HSPReader {
                  * ***/
                 resultSet.clear();
                 loopResultSetCollection.clear();
+                keySet.clear();
                 /**===================================================**/
             }
 
@@ -163,11 +160,8 @@ public class HSPReaderV2 implements HSPReader {
                 continue;
             }
 
-
-            int repetition = 0;
-            do {
                 Map<String, Object> loopResultSet = new HashMap<String, Object>();
-                repetition++;
+
                 List<Element> elements = ruleExtractor.getElements(contentSegment, layoutType);
                 Element element;
                 String key, value=null;
@@ -188,8 +182,8 @@ public class HSPReaderV2 implements HSPReader {
                     }
 
                     String generatedKey = KeyGenerator.generateKey(layoutType, contentSegment, key, keySet);
+                    keySet.add(generatedKey);
 
-                    //System.out.println(":::::key ::::::::"+key);
                     if (Constants.dependentInsuredRecordType.contains(contentSegment)) {
                         insuredDependentRecordType.put(generatedKey, value);
                     } else if (Constants.dependentInsuredFields.contains(key)) {
@@ -204,13 +198,13 @@ public class HSPReaderV2 implements HSPReader {
                     }
 
                 }
+                // Completion after the Section.
                 if (Segment.loopRecordType.contains(contentSegment.trim())) {
                     loopResultSetCollection.add(loopResultSet);
                 }
-            } while (repetition < KeyGenerator.getSegmentRepetition(contentSegment));
 
             // =====================================================================
-            if (contentSegment.trim().equalsIgnoreCase("C")) {
+            if (contentSegment.trim().equalsIgnoreCase("C") && layoutType.equalsIgnoreCase(Constants.Layout_Insured)) {
 
                 if (customLayoutCollection.isEmpty()) {
                     customLayoutCollection.putAll(insuredDependentFieldsTemp);
@@ -236,11 +230,6 @@ public class HSPReaderV2 implements HSPReader {
 
         Map<String, Object> objectMap = new HashMap<>();
 
-        System.out.println("========================================================================");
-        System.out.println("::: insured Dependent List ::::"+new Gson().toJson(insuredDependentList));
-        System.out.println("::: loopSet :::::"+new Gson().toJson(loopSet));
-        System.out.println("========================================================================");
-
         ArrayList<Map<String,Object>> mergedResult;
         if(layout.equalsIgnoreCase("dependent")){
             mergedResult = SegmentUtils.getMergedResult(loopSet,insuredDependentRecordType,insuredDependentList,60);
@@ -248,20 +237,23 @@ public class HSPReaderV2 implements HSPReader {
             mergedResult = loopSet;
         }
 
+        /**
+         *
+         * */
+        System.out.println("=============================================================");
+        System.out.println("====== source result ====="+new Gson().toJson(resultSet));
+        System.out.println("====== merged result ====="+new Gson().toJson(resultSet));
 
         if (mergedResult.size() > 0) {
             for (int i = 0; i < mergedResult.size(); i++) {
                 objectMap.clear();
                 objectMap.putAll(resultSet);
                 objectMap.putAll(mergedResult.get(i));
+
+                System.out.println("::: each row  ::::"+new Gson().toJson(objectMap));
                 SegmentUtils.findAndWriteMatchedLayoutFieldValue(layoutExtractor,csvGenerator,objectMap,layout,this.inputFileName);
             }
         }
+        System.out.println("=========================end of writing each block ===========================");
     }
-
-
-    /*void extractLayoutFields(InputStream layoutStream) {
-        String[] arrays = new String[]{Constants.Layout_Insured, Constants.Layout_DEPENDENT};
-        layoutExtractor.extractLayoutField(layoutStream, arrays);
-    }*/
 }

@@ -164,7 +164,7 @@ public class HSPLayoutReader {
                 repetition++;
                 List<Element> elements = ruleExtractor.getElements(contentSegment, layoutType);
                 Element element;
-                String key, value;
+                String key, value="";
                 int beginIndex, endIndex;
 
                 for (int i = 0; i < elements.size(); i++) {
@@ -175,8 +175,13 @@ public class HSPLayoutReader {
                     if (stringLength < endIndex) {
                         endIndex = line.length() - 1;
                     }
-                    value = line.substring(beginIndex, endIndex).trim();
+
+                    if (beginIndex < line.length() - 1) {
+                        value = line.substring(beginIndex, endIndex).trim();
+                    }
+
                     String generatedKey = KeyGenerator.generateKey(layoutType, contentSegment, key, keySet);
+                    keySet.add(generatedKey);
 
                     if (Constants.dependentInsuredRecordType.contains(contentSegment)) {
                         insuredDependentTemp.put(generatedKey, value);

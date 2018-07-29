@@ -53,7 +53,7 @@ public class KeyGenerator {
      ***/
     public static String generateKey(String layoutType, String recordType, String element, List<String> totalFields) {
 
-        String generatedKey = "";
+        String generatedKey;
         String attachKey = "";
         if (layoutType.equalsIgnoreCase(Constants.Layout_Insured)) {
             attachKey = "I_";
@@ -61,8 +61,10 @@ public class KeyGenerator {
             attachKey = "D_";
         }
 
-        if (commonRecordType.contains(recordType) || (recordType.startsWith("S") && recordType.length() == 2)) {
+        if (commonRecordType.contains(recordType) ||  (recordType.startsWith("S") && recordType.length() == 2)) {
             generatedKey = attachKey + element;
+        } else {
+            generatedKey = element;
         }
 
         if (insuredRepetitionRecordType.containsKey(recordType)) {
@@ -75,15 +77,9 @@ public class KeyGenerator {
 
             do {
                 i++;
-                if (i > insuredRepetitionRecordType.get(recordType)) {
-                    logger.info(":::: found ::::: out of Index ::: for record Type :::"+recordType);
-                    break;
-                }
                 generatedKey = attachKey + prefix + "_" + i + "_" + suffix;
 
             } while (totalFields.contains(generatedKey));
-        } else {
-            generatedKey = element;
         }
         return generatedKey;
     }
